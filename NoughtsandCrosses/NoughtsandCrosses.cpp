@@ -59,6 +59,7 @@ int main()
 			IsPlayersTurn = true;
 		}
 	} while (!IsGameWon(Board, WinState));
+	PrintBoard(Board);
 	if (WinState == 1)
 	{
 		cout << "No more moves available, its a draw!\n";
@@ -260,7 +261,7 @@ int GetAITurn(Squares BoardOUT[], int Level)
 	//If initial call of function, play the best move.
 	if (Level == 0)
 	{
-		Moves BestMove;
+		Moves BestMove{0,-50};
 		for (unsigned int i = 0; i < PossMoves.size(); i++)
 		{
 			if (PossMoves[i].Cost > BestMove.Cost)
@@ -276,7 +277,7 @@ int GetAITurn(Squares BoardOUT[], int Level)
 	//If it's 'AI's turn' in recursive iterations, return max cost.
 	else if (Level % 2 == 0)
 	{
-		Moves BestMove;
+		Moves BestMove{ 0,-50 };
 		for (unsigned int i = 0; i < PossMoves.size(); i++)
 		{
 			if (PossMoves[i].Cost > BestMove.Cost)
@@ -290,7 +291,7 @@ int GetAITurn(Squares BoardOUT[], int Level)
 	//If 'players turn', return min cost.
 	else
 	{
-		Moves WorstMove;
+		Moves WorstMove{ 0,50 };
 		for (unsigned int i = 0; i < PossMoves.size(); i++)
 		{
 			if (PossMoves[i].Cost < WorstMove.Cost)
