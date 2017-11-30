@@ -36,39 +36,46 @@ void PrintBoard(Squares* Board);
 void GetPlayerTurn(Squares BoardOUT[]);
 int GetAITurn(Squares BoardOUT[], int Level);
 bool IsGameWon(Squares* Board, int& WinStateOUT);
+bool AskToPlayAgain();
 
 int main()
 {
-	Squares Board[9];
 	bool IsPlayersTurn = true;
 	int WinState = 0; //1 = Draw, 2 = Player, 3 = AI
+	bool WantsToPlayAgain = true;
 
-	do
+	while (WantsToPlayAgain)
 	{
+		Squares Board[9];
+		do
+		{
+			PrintBoard(Board);
+			if (IsPlayersTurn)
+			{
+				GetPlayerTurn(Board);
+				cout << endl;
+				IsPlayersTurn = false;
+			}
+			else
+			{
+				cout << "My turn!\n\n";
+				GetAITurn(Board, 0);
+				IsPlayersTurn = true;
+			}
+		} while (!IsGameWon(Board, WinState));
 		PrintBoard(Board);
-		if (IsPlayersTurn)
+		if (WinState == 1)
 		{
-			GetPlayerTurn(Board);
-			cout << endl;
-			IsPlayersTurn = false;
+			cout << "No more moves available, its a draw!\n";
 		}
-		else
+		if (WinState == 2)
 		{
-			cout << "My turn!\n\n";
-			GetAITurn(Board, 0);
-			IsPlayersTurn = true;
+			cout << "Congratulations! You won!\n";
 		}
-	} while (!IsGameWon(Board, WinState));
-	PrintBoard(Board);
-	if (WinState == 1)
-	{
-		cout << "No more moves available, its a draw!\n";
+		else { cout << "Better luck next time, yove been beaten!\n"; }
+		WantsToPlayAgain = AskToPlayAgain();
 	}
-	if (WinState == 2)
-	{
-		cout << "Congratulations! You won!\n";
-	}
-	else { cout << "Better luck next time, yove been beaten!\n"; }
+
 	return 0;
 }
 
@@ -300,5 +307,29 @@ int GetAITurn(Squares BoardOUT[], int Level)
 			}
 		}
 		return WorstMove.Cost;
+	}
+}
+
+bool AskToPlayAgain()
+{
+	bool IsResponseValid = false;
+	while (!IsResponseValid)
+	{
+		cout << "Would you like to try beat me again?\n";
+		cout << "(Type Y id youd like to be beaten again, N if not.)\n";
+		string Response;
+		getline(cin, Response);
+		if (Response[0] == 'Y' || Response[0] == 'y')
+		{ 
+			cout << "I like your positivity!\n";
+			return true; 
+		}
+		else if (Response[0] == 'N' || Response[0] == 'n')
+		{ return false;	}
+		else
+		{
+			cout << "I didnt get that, use your words..\n";
+				IsResponseValid = false;
+		}
 	}
 }
